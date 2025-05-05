@@ -20,7 +20,7 @@ This is a full-stack note-taking application with a **frontend** built using Rea
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/note-taking-app.git
+git clone git@github.com:Sabnit/note-taking-app.git
 cd note-taking-app
 ```
 
