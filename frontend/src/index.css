@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.note li a.active,
+.category a.active h3 {
+  background-color: oklch(98% 0.05 100.684);
+  color: #fb2c36;
+  border-left: 2px solid currentColor;
+  border-color: #fb2c36;
+}
