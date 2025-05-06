@@ -18,7 +18,6 @@ import { groupNotesByDate } from "../../../../utils/formatter";
 import {
   useCategoryNotes,
   useDeleteCategory,
-  useUpdateCategory,
   usePrefetchNextCategoryNotes,
 } from "../../../../hooks/query/useCategories";
 import { AppContext } from "../../../../context/AppContext";
@@ -41,7 +40,6 @@ const CategoryDetails = () => {
   const { setIsAddCategoryModalOpen, setSelectedCategoryId } =
     useContext(AppContext);
 
-  const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
 
   // // Prefect nextPage data
@@ -59,14 +57,6 @@ const CategoryDetails = () => {
     setIsAddCategoryModalOpen((prev) => !prev);
 
     setSelectedCategoryId(id);
-    // updateCategoryMutation.mutate(
-    //   { id },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success("Category updated successfully");
-    //     },
-    //   }
-    // );
   };
   const handleDelete = () => {
     deleteCategoryMutation.mutate(
