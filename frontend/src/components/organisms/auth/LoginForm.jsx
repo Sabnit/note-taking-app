@@ -130,12 +130,7 @@ const LoginForm = () => {
             </Link>
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" variant="primary" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Log In"}
           </Button>
 

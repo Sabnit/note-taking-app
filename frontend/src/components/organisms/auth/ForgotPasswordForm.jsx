@@ -7,6 +7,7 @@ import { ERROR_MESSAGES } from "../../../constants/errorMessages";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import api from "../../../utils/api";
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
+import FormField from "../../molecules/FormField";
 
 const ForgotPasswordForm = () => {
   const [formData, setFormData] = useState({
@@ -75,7 +76,7 @@ const ForgotPasswordForm = () => {
             error={errors.email}
           />
 
-          <Button type="submit" variant="primary" className="w-full">
+          <Button type="submit" variant="primary" disabled={isSubmitting}>
             {isSubmitting ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>

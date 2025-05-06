@@ -18,7 +18,7 @@ const NavBar = () => {
       </Link>
       {location.pathname == "/" && (
         <Link to={CLIENT_ROUTES.AUTH_ROUTES.LOGIN}>
-          <Button variant="simple" className="">
+          <Button variant="simple">
             Login
             <img src={assets.arrow_icon} alt="arrow_icon" />
           </Button>
