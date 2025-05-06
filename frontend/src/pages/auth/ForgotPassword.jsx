@@ -1,12 +1,14 @@
 import React from "react";
-import NavBar from "../../components/organisms/auth/NavBar";
+
+import AuthLayout from "../../components/templates/AuthLayout";
 import ForgotPasswordForm from "../../components/organisms/auth/ForgotPasswordForm";
 
 const ForgotPassword = () => {
   return (
     <>
-      <NavBar />
-      <ForgotPasswordForm />
+      <AuthLayout>
+        <ForgotPasswordForm />
+      </AuthLayout>
     </>
   );
 };

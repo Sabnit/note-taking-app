@@ -19,5 +19,5 @@ export const CLIENT_ROUTES = {
     getCategoryPath: (id) => `${BASE_APP_URL}/category/${id}`,
     PROFILE: `${BASE_APP_URL}/profile`,
   },
-  HOME: "/",
+  WELCOME: "/",
 };

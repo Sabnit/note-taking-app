@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "../../atoms/Button";
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
 
-const HomeContent = () => {
+const WelcomeScreen = () => {
   return (
     <div className="flex flex-col justify-center items-center h-screen px-6 text-center bg-gray-200 text-gray-800">
       <h1 className="text-3xl sm:text-5xl font-bold text-orange-400 mb-4">
@@ -26,4 +26,4 @@ const HomeContent = () => {
   );
 };
 
-export default HomeContent;
+export default WelcomeScreen;

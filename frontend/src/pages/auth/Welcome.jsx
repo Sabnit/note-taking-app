@@ -1,16 +1,16 @@
 import React from "react";
 
 import AuthLayout from "../../components/templates/AuthLayout";
-import SignupForm from "../../components/organisms/auth/SignupForm";
+import WelcomeScreen from "../../components/organisms/auth/WelcomeScreen";
 
-const Signup = () => {
+const Welcome = () => {
   return (
     <>
       <AuthLayout>
-        <SignupForm />
+        <WelcomeScreen />
       </AuthLayout>
     </>
   );
 };
 
-export default Signup;
+export default Welcome;

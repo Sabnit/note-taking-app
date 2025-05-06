@@ -1,12 +1,15 @@
+import React from "react";
+
+import AuthLayout from "../../components/templates/AuthLayout";
 import LoginForm from "../../components/organisms/auth/LoginForm";
-import NavBar from "../../components/organisms/auth/NavBar";
 
 const Login = () => {
   return (
-    <div>
-      <NavBar />
-      <LoginForm />
-    </div>
+    <>
+      <AuthLayout>
+        <LoginForm />
+      </AuthLayout>
+    </>
   );
 };
 

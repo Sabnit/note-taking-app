@@ -4,9 +4,9 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import NotProtectedRoute from "./routes/NotProtectedRoute";
 
-import Home from "./pages/auth/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import Welcome from "./pages/auth/Welcome";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 
@@ -22,7 +22,7 @@ const App = () => {
       <Routes>
         {/* Public routes */}
         <Route element={<NotProtectedRoute />}>
-          <Route path={CLIENT_ROUTES.HOME} element={<Home />}></Route>
+          <Route path={CLIENT_ROUTES.WELCOME} element={<Welcome />}></Route>
           <Route
             path={CLIENT_ROUTES.AUTH_ROUTES.LOGIN}
             element={<Login />}
