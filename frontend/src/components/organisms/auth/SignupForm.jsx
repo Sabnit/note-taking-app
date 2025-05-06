@@ -132,7 +132,12 @@ const SignupForm = () => {
             error={errors.password}
           />
 
-          <Button type="submit" variant="primary" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+            className="w-full"
+          >
             {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>
 

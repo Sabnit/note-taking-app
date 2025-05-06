@@ -122,7 +122,12 @@ const ResetPasswordForm = () => {
             error={errors.confirmPassword}
           />
 
-          <Button type="submit" variant="primary" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+            className="w-full"
+          >
             {isSubmitting ? "Resetting..." : "Reset Password"}
           </Button>
         </form>

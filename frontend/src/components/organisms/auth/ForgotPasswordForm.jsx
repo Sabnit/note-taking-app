@@ -76,7 +76,12 @@ const ForgotPasswordForm = () => {
             error={errors.email}
           />
 
-          <Button type="submit" variant="primary" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            variant="primary"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>
