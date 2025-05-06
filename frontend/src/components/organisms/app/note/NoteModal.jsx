@@ -1,22 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 import { Fragment, useContext } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { Hash, Search, X } from "lucide-react";
+import { toast } from "react-toastify";
 
+import Button from "../../../atoms/Button";
+import IconButton from "../../../atoms/IconButton";
+import FormField from "../../../molecules/FormField";
+import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
+import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
+
+import { AppContext } from "../../../../context/AppContext";
+
+import { validateNoteForm } from "../../../../utils/formValidator";
+
+import { ERROR_MESSAGES } from "../../../../constants/errorMessages";
+
+import { useCategories } from "../../../../hooks/query/useCategories";
 import {
   useCreateNote,
   useDeleteNote,
   useNote,
   useUpdateNote,
 } from "../../../../hooks/query/useNotes";
-import { AppContext } from "../../../../context/AppContext";
-import { useCategories } from "../../../../hooks/query/useCategories";
-import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
-import { useLocation, useParams } from "react-router-dom";
-import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
-import { ERROR_MESSAGES } from "../../../../constants/errorMessages";
-import FormField from "../../../molecules/FormField";
-import { validateNoteForm } from "../../../../utils/formValidator";
-import { toast } from "react-toastify";
 
 const NoteModal = () => {
   const [formData, setFormData] = useState({
@@ -370,15 +376,14 @@ const NoteModal = () => {
                       key={categoryId}
                       className="flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-sm"
                     >
-                      <Hash size={14} className="text-blue-500" />
+                      <Hash size={15} className="text-blue-500" />
                       <span>{categoryMap[categoryId]}</span>
-                      <button
-                        type="button"
+                      <IconButton
+                        className="pt-1"
                         onClick={() => handleRemoveCategory(categoryId)}
-                        className="ml-1 text-gray-500 hover:text-gray-700"
                       >
-                        <X size={14} />
-                      </button>
+                        <X size={15} />
+                      </IconButton>
                     </div>
                   ))}
                 </div>
@@ -447,29 +452,23 @@ const NoteModal = () => {
               <div className="flex justify-between gap-2">
                 <div>
                   {isEditMode && (
-                    <button
-                      type="button"
+                    <Button
                       onClick={handleDelete}
-                      className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                      variant="danger"
                       disabled={deleteNoteMutation.isPending}
                     >
                       {deleteNoteMutation.isPending ? "Deleting..." : "Delete"}
-                    </button>
+                    </Button>
                   )}
                 </div>
 
-                <div>
-                  <button
-                    type="button"
-                    onClick={handleClose}
-                    className="h-9 px-4 text-neutral-600 rounded-md text-sm font-medium hover:bg-neutral-50 cursor-pointer"
-                  >
+                <div className="flex gap-2">
+                  <Button type="button" variant="danger" onClick={handleClose}>
                     Cancel
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     type="submit"
-                    className="h-9 px-4 bg-[#f1c98b] hover:bg-[#e2bc82] text-white rounded-md text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       isEditMode
                         ? !hasChanges() || updateNoteMutation.isPending
@@ -483,7 +482,7 @@ const NoteModal = () => {
                       : createNoteMutation.isPending
                       ? "Adding..."
                       : "Add note"}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

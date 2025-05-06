@@ -8,6 +8,8 @@ import {
   User,
 } from "lucide-react";
 
+import Button from "../../atoms/Button";
+
 import { AppContext } from "../../../context/AppContext";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -36,18 +38,22 @@ const SideBarHeader = () => {
             showProfileBar ? "hidden" : "block"
           } mt-1 absolute bg-gray-200 top-10 left-0 px-4 py-3 rounded-lg w-40`}
         >
-          <button className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-300 transition-colors cursor-pointer rounded-sm">
-            <User size={16} className="text-gray-500" />
+          <Button
+            variant="none"
+            className="flex items-center gap-3 text-gray-400 hover:text-orange-400 transition-colors "
+          >
+            <User size={16} />
             <span>Profile</span>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleLogout}
-            className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-300 text-red-600 transition-colors cursor-pointer rounded-sm"
+            variant="none"
+            className="flex items-center gap-3 text-gray-400 hover:text-orange-400 transition-colors "
           >
             <LogOut size={16} />
             <span>Logout</span>
-          </button>
+          </Button>
         </div>
       </div>
       <div className="flex items-center gap-3">

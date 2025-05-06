@@ -1,8 +1,16 @@
 import { Plus } from "lucide-react";
 import React, { useContext } from "react";
-import { AppContext } from "../../../../context/AppContext";
+
 import Button from "../../../atoms/Button";
 
+import { AppContext } from "../../../../context/AppContext";
+
+/**
+ * Custom Add note button component
+ *
+ * @param {object} props
+ * @param {'nav' | 'normal'} [props.style] - Visual style of the button
+ */
 const AddNoteButton = ({ style }) => {
   const { setIsAddNoteModalOpen } = useContext(AppContext);
   function handleClick() {

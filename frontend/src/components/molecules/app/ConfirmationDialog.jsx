@@ -1,5 +1,7 @@
 import React from "react";
 
+import Button from "../../atoms/Button";
+
 const ConfirmationDialog = ({ onCancel, onDiscard }) => {
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50">
@@ -9,18 +11,16 @@ const ConfirmationDialog = ({ onCancel, onDiscard }) => {
           You have unsaved changes. Are you sure you want to cancel?
         </p>
         <div className="flex justify-end gap-3">
-          <button
+          <Button
+            variant="secondary"
             className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
             onClick={onCancel}
           >
             Continue editing
-          </button>
-          <button
-            className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded"
-            onClick={onDiscard}
-          >
+          </Button>
+          <Button variant="danger" onClick={onDiscard}>
             Discard changes
-          </button>
+          </Button>
         </div>
       </div>
     </div>

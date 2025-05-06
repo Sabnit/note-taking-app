@@ -1,5 +1,7 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import IconButton from "../../atoms/IconButton";
 
 const Pagination = ({
   page,
@@ -10,17 +12,16 @@ const Pagination = ({
 }) => {
   return (
     <div className="flex items-center justify-end gap-2">
-      <button
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+      <IconButton
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100 "
         onClick={() => hasPreviousPage && onPageChange(page - 1)}
         disabled={!hasPreviousPage}
       >
         <ChevronLeft
           size={16}
-          className={!hasPreviousPage ? "opacity-50" : ""}
+          className={!hasPreviousPage ? "opacity-50" : "text-black"}
         />
-        <span className="sr-only">Previous page</span>
-      </button>
+      </IconButton>
 
       <div className="flex items-center gap-1">
         <span className="text-sm font-medium text-gray-500">
@@ -28,14 +29,16 @@ const Pagination = ({
         </span>
       </div>
 
-      <button
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 cursor-pointer"
+      <IconButton
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white  hover:bg-gray-50 active:bg-gray-100"
         onClick={() => hasNextPage && onPageChange(page + 1)}
         disabled={!hasNextPage}
       >
-        <ChevronRight size={16} className={!hasNextPage ? "opacity-50" : ""} />
-        <span className="sr-only">Next page</span>
-      </button>
+        <ChevronRight
+          size={16}
+          className={!hasNextPage ? "opacity-50" : "text-black"}
+        />
+      </IconButton>
     </div>
   );
 };

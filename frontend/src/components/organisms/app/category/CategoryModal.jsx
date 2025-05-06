@@ -1,15 +1,21 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+
+import Button from "../../../atoms/Button";
+import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
+import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
+
 import { AppContext } from "../../../../context/AppContext";
+
 import { ERROR_MESSAGES } from "../../../../constants/errorMessages";
+
+import { validateCategoryForm } from "../../../../utils/formValidator";
+
 import {
   useCategory,
   useCreateCategory,
   useUpdateCategory,
 } from "../../../../hooks/query/useCategories";
-import { validateCategoryForm } from "../../../../utils/formValidator";
-import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
-import { toast } from "react-toastify";
-import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
 
 const CategoryModal = () => {
   const [formData, setFormData] = useState({
@@ -174,17 +180,13 @@ const CategoryModal = () => {
 
             <div className="flex items-center justify-end p-4 border-t border-neutral-100">
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="h-9 px-4 text-neutral-600 rounded-md text-sm font-medium hover:bg-neutral-100 cursor-pointer"
-                >
+                <Button onClick={handleClose} variant="danger">
+                  {" "}
                   Cancel
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="submit"
-                  className="h-9 px-4 bg-[#f1c98b] hover:bg-[#e2bc82] text-white rounded-md text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={
                     isEditMode
                       ? !hasChanges() || updateCategoryMutation.isPending
@@ -198,7 +200,7 @@ const CategoryModal = () => {
                     : createCategoryMutation.isPending
                     ? "Adding..."
                     : "Add category"}
-                </button>
+                </Button>
               </div>
             </div>
           </form>

@@ -1,4 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 import {
   CirclePlus,
   Hash,
@@ -8,7 +9,9 @@ import {
   ChevronsUp,
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import Button from "../../atoms/Button";
+import IconButton from "../../atoms/IconButton";
+
 import { AppContext } from "../../../context/AppContext";
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
 import { useCategories } from "../../../hooks/query/useCategories";
@@ -47,13 +50,14 @@ const SideBarMyCategories = () => {
     return (
       <div className="mt-5 mb-10 px-4">
         <p className="text-sm text-gray-500">No categories available.</p>
-        <button
+        <Button
+          variant="none"
+          className="mt-2 text-sm text-gray-400 hover:text-orange-400 flex items-center gap-1"
           onClick={() => setIsAddCategoryModalOpen(true)}
-          className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
         >
           <CirclePlus size={16} />
           <span>Add a category</span>
-        </button>
+        </Button>
       </div>
     );
   }
@@ -70,8 +74,7 @@ const SideBarMyCategories = () => {
   };
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-    // Hide search when collapsing
+    setIsCollapsed((prev) => !prev);
     if (!isCollapsed) {
       setShowSearch(false);
       setSearchQuery("");
@@ -79,7 +82,8 @@ const SideBarMyCategories = () => {
   };
 
   const toggleSearch = () => {
-    setShowSearch(!showSearch);
+    setShowSearch((prev) => !prev);
+    setIsCollapsed((prev) => !prev);
     if (showSearch) {
       setSearchQuery("");
     }
@@ -110,25 +114,20 @@ const SideBarMyCategories = () => {
 
           <div className="flex items-center gap-2">
             {!showSearch && (
-              <button
+              <IconButton
                 className="text-gray-400 hover:text-gray-700 transition-colors"
                 onClick={toggleSearch}
                 title="Search categories"
               >
                 <Search size={16} />
-              </button>
+              </IconButton>
             )}
 
-            <button
-              className="text-gray-400 hover:text-gray-700 transition-colors"
-              onClick={handleAddCategory}
-              title="Add category"
-            >
+            <IconButton onClick={handleAddCategory} title="Add category">
               <CirclePlus size={16} />
-            </button>
+            </IconButton>
 
-            <button
-              className="text-gray-400 hover:text-gray-700 transition-colors"
+            <IconButton
               onClick={toggleCollapse}
               title={isCollapsed ? "Expand categories" : "Collapse categories"}
             >
@@ -137,7 +136,7 @@ const SideBarMyCategories = () => {
               ) : (
                 <ChevronsUp size={16} />
               )}
-            </button>
+            </IconButton>
           </div>
         </div>
 
@@ -154,20 +153,17 @@ const SideBarMyCategories = () => {
                 className="w-full py-1 px-2 pr-7 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               {searchQuery && (
-                <button
+                <IconButton
                   onClick={clearSearch}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
                 >
                   <X size={14} />
-                </button>
+                </IconButton>
               )}
             </div>
-            <button
-              onClick={toggleSearch}
-              className="text-gray-400 hover:text-gray-600"
-            >
+            <IconButton onClick={toggleSearch}>
               <X size={16} />
-            </button>
+            </IconButton>
           </div>
         )}
       </div>
@@ -196,17 +192,18 @@ const SideBarMyCategories = () => {
               ))}
             </ul>
           ) : (
-            <div className="px-4 py-3 text-sm text-gray-500">
+            <div className="px-4 py-3 text-sm text-gray-500  w-full">
               {searchQuery ? (
                 <div className="flex flex-col items-center justify-center gap-2">
                   <p>No categories match "{searchQuery}"</p>
-                  <button
+
+                  <Button
                     onClick={clearSearch}
-                    className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
+                    className="flex items-center  hover:text-orange-300"
+                    variant="none"
                   >
-                    <X size={14} />
                     <span>Clear search</span>
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <p>No categories available</p>
