@@ -1,4 +1,5 @@
 import serverConfig from "../config.js";
+import logger from "../config/logger.js";
 
 /**
  * Global Error handling middleware
@@ -8,7 +9,7 @@ export const errorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
 
   // Log error for debugging
-  console.error(`ERROR (${err.statusCode}): ${err.message}`);
+  logger.error(`ERROR (${err.statusCode}): ${err.message}`);
 
   // Send standardized error response
   res.status(err.statusCode).json({

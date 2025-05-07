@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import { refreshToken } from "../services/authService";
+import { handleApiError } from "./errorHandler";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -35,11 +36,11 @@ api.interceptors.response.use(
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
         window.location.href = "/auth/login";
-        return Promise.reject(refreshError);
+        return Promise.reject(handleApiError(refreshError));
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(handleApiError(error));
   }
 );
 
