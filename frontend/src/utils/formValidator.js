@@ -28,8 +28,9 @@ export const validateCategoryForm = (formData) => {
   const newErrors = {};
 
   if (formData.title.length < 3) {
-    toast.error(ERROR_MESSAGES.APP_FORM.CATEGORY_TITLE_REQUIRED);
+    newErrors.title = ERROR_MESSAGES.APP_FORM.CATEGORY_TITLE_REQUIRED;
   }
+  Object.entries(newErrors).forEach((error) => toast.error(error[1]));
 
   return Object.keys(newErrors).length === 0;
 };
