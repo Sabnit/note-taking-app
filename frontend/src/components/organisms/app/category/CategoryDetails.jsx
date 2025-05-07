@@ -3,9 +3,7 @@ import { toast } from "react-toastify";
 import { Edit, NotepadText, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Header from "../../../molecules/app/Header";
-import Pagination from "../../../molecules/app/pagination";
-import NoteItem from "../../../molecules/app/note/NoteItem";
+import Pagination from "../../../molecules/app/Pagination";
 import NoteListLayout from "../../../templates/NotesLayout";
 import PageIsLoading from "../../../molecules/app/PageIsLoading";
 import AddNoteButton from "../../../molecules/app/note/AddNoteButton";

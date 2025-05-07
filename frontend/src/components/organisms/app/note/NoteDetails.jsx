@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NotepadText } from "lucide-react";
 
 import Header from "../../../molecules/app/Header";
-import Pagination from "../../../molecules/app/pagination";
+import Pagination from "../../../molecules/app/Pagination";
 import PageIsLoading from "../../../molecules/app/PageIsLoading";
 import AddNoteButton from "../../../molecules/app/note/AddNoteButton";
 
