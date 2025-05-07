@@ -4,10 +4,10 @@ import { Edit, NotepadText, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "../../../molecules/app/Header";
-import Loader from "../../../molecules/app/PageIsLoading";
 import Pagination from "../../../molecules/app/pagination";
 import NoteItem from "../../../molecules/app/note/NoteItem";
-import NoteListLayout from "../../../molecules/app/NoteListLayout";
+import NoteListLayout from "../../../templates/NotesLayout";
+import PageIsLoading from "../../../molecules/app/PageIsLoading";
 import AddNoteButton from "../../../molecules/app/note/AddNoteButton";
 
 import { PAGE_LIMIT } from "../../../../constants/pagination";
@@ -80,7 +80,7 @@ const CategoryDetails = () => {
   };
 
   if (isError) return <div>Error: {error.message}</div>;
-  if (isLoading) return <Loader />;
+  if (isLoading) return <PageIsLoading />;
 
   const { notes, categoryTitle, pagination } = data;
 

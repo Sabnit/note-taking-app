@@ -1,19 +1,19 @@
 import React, { useContext } from "react";
 
-import { AppContext } from "../../../context/AppContext";
-import SideBarHeader from "../../molecules/app/SideBarHeader";
-import AddNote from "../../molecules/app/note/AddNoteButton";
 import SearchBar from "../../molecules/app/SearchBar";
-import SideBarNavigation from "../../molecules/app/SideBarNavigation";
+import AddNote from "../../molecules/app/note/AddNoteButton";
+import SideBarHeader from "../../molecules/app/SideBarHeader";
 import Category from "../../molecules/app/category/CategoryItem";
-import CategoryDetails from "./category/CategoryList";
+import SideBarNavigation from "../../molecules/app/SideBarNavigation";
 import SideBarMyCategories from "../../molecules/app/SideBarMyCategories";
+
+import { AppContext } from "../../../context/AppContext";
 
 const SideBar = () => {
   const { isSidebarOpen } = useContext(AppContext);
 
   return (
-    <div
+    <sidebar
       className={`${
         isSidebarOpen ? "w-64" : "w-0"
       }  border-r border-gray-200 flex flex-col h-screen bg-neutral-50 transition-all duration:300 overflow-hidden`}
@@ -23,7 +23,7 @@ const SideBar = () => {
       <SearchBar />
       <SideBarNavigation />
       <SideBarMyCategories />
-    </div>
+    </sidebar>
   );
 };
 

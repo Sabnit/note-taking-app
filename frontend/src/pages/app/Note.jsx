@@ -1,7 +1,7 @@
 import React from "react";
 
-import AppLayout from "../../components/organisms/app/AppLayout";
-import NoteDetails from "../../components/organisms/app/NoteDetails";
+import AppLayout from "../../components/templates/AppLayout";
+import NoteDetails from "../../components/organisms/app/note/NoteDetails";
 
 const Note = () => {
   return (
