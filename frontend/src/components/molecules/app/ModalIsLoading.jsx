@@ -1,6 +1,6 @@
 import React from "react";
 
-const NoteIsLoading = () => {
+const ModalIsLoading = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/20" />
@@ -13,4 +13,4 @@ const NoteIsLoading = () => {
   );
 };
 
-export default NoteIsLoading;
+export default ModalIsLoading;

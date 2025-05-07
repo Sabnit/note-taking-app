@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import Button from "../../../atoms/Button";
-import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
+import ModalIsLoading from "../../../molecules/app/ModalIsLoading";
 import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
 
 import { AppContext } from "../../../../context/AppContext";
@@ -66,7 +66,7 @@ const CategoryModal = () => {
   }, [isAddCategoryModalOpen]);
 
   if (isAddCategoryModalOpen && categoryLoading) {
-    return <NoteIsLoading />;
+    return <ModalIsLoading />;
   }
 
   // Check if form has been modified from original data
@@ -77,16 +77,13 @@ const CategoryModal = () => {
 
   const handleClose = () => {
     if (isEditMode && hasChanges()) {
-      console.log("Showing confirmation dialog");
       setShowConfirmation(true);
     } else {
-      console.log("Closing modal directly");
       closeModal();
     }
   };
 
   const closeModal = () => {
-    console.log("Closing category modal - resetting all state");
     setFormData({ title: "" });
     setOriginalData(null);
     setShowConfirmation(false);
@@ -105,7 +102,6 @@ const CategoryModal = () => {
     if (!validateCategoryForm(formData)) return;
 
     if (isEditMode) {
-      // Only include fields that have changed
       const changedData = {};
 
       // Compare each field with original data
@@ -123,6 +119,7 @@ const CategoryModal = () => {
               closeModal();
             },
             onError: (error) => {
+              console.log(error);
               toast.error(error.message || "Failed to update category");
             },
           }

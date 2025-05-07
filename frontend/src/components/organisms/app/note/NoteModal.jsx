@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import Button from "../../../atoms/Button";
 import IconButton from "../../../atoms/IconButton";
 import FormField from "../../../molecules/FormField";
-import NoteIsLoading from "../../../molecules/app/NoteIsLoading";
+import ModalIsLoading from "../../../molecules/app/ModalIsLoading";
 import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
 
 import { AppContext } from "../../../../context/AppContext";
@@ -127,7 +127,7 @@ const NoteModal = () => {
     isAddNoteModalOpen &&
     (categoriesLoading || (isEditMode && noteLoading))
   ) {
-    return <NoteIsLoading />;
+    return <ModalIsLoading />;
   }
 
   if (!isAddNoteModalOpen) {
