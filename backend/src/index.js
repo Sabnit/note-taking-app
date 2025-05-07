@@ -10,6 +10,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import serverConfig from "./config.js";
 import routes from "./routes/index.routes.js";
 import { swaggerOptions } from "./config/swaggerOptions.js";
+import logger, { stream } from "./config/logger.js";
 
 // Initializing App
 const app = express();
@@ -25,6 +26,12 @@ app.use(cors({ origin: serverConfig.corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+app.use(
+  morgan(":method :url :status :response-time ms - :res[content-length]", {
+    stream: stream,
+  })
+);
 
 // API Routes
 app.use("/api", routes);
