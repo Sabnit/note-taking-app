@@ -39,7 +39,7 @@ const LoginForm = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = ERROR_MESSAGES.AUTH_FORM.FORM.EMAIL_REQUIRED;
+      newErrors.email = ERROR_MESSAGES.AUTH_FORM.EMAIL_REQUIRED;
     }
     if (!formData.password) {
       newErrors.password = ERROR_MESSAGES.AUTH_FORM.PASSWORD_REQUIRED;
