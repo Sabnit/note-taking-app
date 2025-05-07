@@ -36,19 +36,16 @@ cd note-taking-app
 
    ```bash
    npm install
+   npx prisma generate
    ```
 
-3. Create a `.env` file in the `backend` directory using `.env.exmaple` and configure accordingly:
-
-Use "https://console.prisma.io/" to create a new database and get the connection string.
+3. Create a `.env` file in the `backend` directory using `.env.example` and configure accordingly. Use "https://console.prisma.io/" to create a new database and get the connection string.
 
 4. Start the backend server:
 
    ```bash
    npm start
    ```
-
-   The backend will run on `http://localhost:5000`.
 
 ---
 
@@ -71,8 +68,6 @@ Use "https://console.prisma.io/" to create a new database and get the connection
    ```bash
    npm start
    ```
-
-   The frontend will run on `http://localhost:3000`.
 
 ---
 
