@@ -1,10 +1,11 @@
 /**
  * Collection of the API routes
  */
-const BASE_AUTH_URL = "/auth";
-const BASE_USER_URL = "/user";
-const BASE_NOTE_URL = "/note";
-const BASE_CATEGORY_URL = "/category";
+const BASE_URL = "/api";
+const BASE_AUTH_URL = `${BASE_URL}/auth`;
+const BASE_USER_URL = `${BASE_URL}/user`;
+const BASE_NOTE_URL = `${BASE_URL}/note`;
+const BASE_CATEGORY_URL = `${BASE_URL}/category`;
 
 export const API_ENDPOINTS = {
   // Auth endpoints
@@ -20,7 +21,7 @@ export const API_ENDPOINTS = {
 
   // User endpoints
   USER_ROUTES: {
-    GET_CURRENT_USER: "/user/me",
+    GET_CURRENT_USER: `${BASE_URL}/user/me`,
     BY_ID: (id) => `${BASE_USER_URL}/${id}`,
   },
 
