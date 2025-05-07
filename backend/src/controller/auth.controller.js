@@ -34,13 +34,13 @@ export const login = async (req, res, next) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: serverConfig.nodeEnv === "production",
-      sameSite: serverConfig.nodeEnv === "production" ? "Strict" : "Lax",
+      sameSite: serverConfig.nodeEnv === "production" ? "None" : "Lax",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: serverConfig.nodeEnv === "production" ? "Strict" : "Lax",
+      sameSite: serverConfig.nodeEnv === "production" ? "None" : "Lax",
     });
 
     return res.status(200).json({
@@ -57,13 +57,13 @@ export const logout = async (req, res, next) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: serverConfig.nodeEnv === "production",
-      sameSite: serverConfig.nodeEnv === "production" ? "Strict" : "Lax",
+      sameSite: serverConfig.nodeEnv === "production" ? "None" : "Lax",
     });
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: serverConfig.nodeEnv === "production",
-      sameSite: serverConfig.nodeEnv === "production" ? "Strict" : "Lax",
+      sameSite: serverConfig.nodeEnv === "production" ? "None" : "Lax",
     });
 
     return res.status(200).json({
@@ -117,7 +117,7 @@ export const refreshToken = (req, res, next) => {
       .cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: serverConfig.nodeEnv === "production",
-        sameSite: serverConfig.nodeEnv === "production" ? "Strict" : "Lax",
+        sameSite: serverConfig.nodeEnv === "production" ? "None" : "Lax",
       })
       .json({ message: "Access token refreshed" });
   } catch (error) {
