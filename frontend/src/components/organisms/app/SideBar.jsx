@@ -13,7 +13,7 @@ const SideBar = () => {
   const { isSidebarOpen } = useContext(AppContext);
 
   return (
-    <sidebar
+    <aside
       className={`${
         isSidebarOpen ? "w-64" : "w-0"
       }  border-r border-gray-200 flex flex-col h-screen bg-neutral-50 transition-all duration:300 overflow-hidden`}
@@ -23,7 +23,7 @@ const SideBar = () => {
       <SearchBar />
       <SideBarNavigation />
       <SideBarMyCategories />
-    </sidebar>
+    </aside>
   );
 };
 
