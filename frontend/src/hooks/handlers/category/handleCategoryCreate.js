@@ -7,7 +7,7 @@ import { showToast } from "../../../utils/toast";
  * @param {Object} params.formData
  * @param {Function} params.closeModal
  */
-export const handleCategoryCreation = ({
+export const handleCategoryCreate = ({
   createCategoryMutation,
   formData,
   closeModal,
