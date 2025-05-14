@@ -16,13 +16,27 @@ import { usePrefetchNextPage } from "./usePrefetchNextPage";
  */
 
 /**
+ * Hook for creating a new category
+ */
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (categoryData) => createCategory(categoryData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+    },
+  });
+};
+
+/**
  * Hook for fetching all categories
  */
 export const useCategories = () => {
   return useQuery({
     queryKey: categoryKeys.list(),
     queryFn: getCategories,
-    keepPreviousData: true, // Added to match useNotes behavior
+    keepPreviousData: true,
   });
 };
 
@@ -58,21 +72,7 @@ export const useCategoryNotes = (id, options = {}) => {
     queryKey: categoryKeys.categoryNotes(id, paginationOptions),
     queryFn: () => getCategoryNotesById(id, paginationOptions),
     enabled: !!id,
-    keepPreviousData: true, // Added to match useNotes behavior
-  });
-};
-
-/**
- * Hook for creating a new category
- */
-export const useCreateCategory = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (categoryData) => createCategory(categoryData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-    },
+    keepPreviousData: true,
   });
 };
 
@@ -89,7 +89,11 @@ export const useUpdateCategory = () => {
 
       // Update the cache for the specific updated note
       queryClient.setQueryData(categoryKeys.detail(variables.id), data);
+
+      // Invalidate and refetch categories
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+
+      // Invalidate category data by id and refetch updated category data for that id
       queryClient.invalidateQueries({
         queryKey: categoryKeys.detail(categoryId),
       });
@@ -106,27 +110,15 @@ export const useDeleteCategory = () => {
   return useMutation({
     mutationFn: ({ id }) => deleteCategory(id),
     onSuccess: (_, id) => {
-      // Remove the categories from the cache
+      // Remove the category list by id
       queryClient.removeQueries({ queryKey: categoryKeys.detail(id) });
-      // Invalidate and refetch list query
+
+      // Invalidate and refetch new category list
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+
+      // Invalidate and refetch new note list
       queryClient.invalidateQueries({ queryKey: noteKeys.lists() });
     },
-  });
-};
-
-/**
- * Hook for prefetching the next page of categories
- * @param {Object} params - Prefetch parameters
- * @param {Object} params.currentOptions - Current pagination options
- * @param {any} params.data - Current data from useCategories
- */
-export const usePrefetchNextCategories = ({ currentOptions, data }) => {
-  return usePrefetchNextPage({
-    currentOptions,
-    data,
-    getQueryKey: (options) => categoryKeys.list(options),
-    fetchFn: (options) => getCategories(options),
   });
 };
 
