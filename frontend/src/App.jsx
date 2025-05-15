@@ -42,15 +42,34 @@ const App = () => {
         </Route>
 
         {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path={CLIENT_ROUTES.APP_ROUTE.PROFILE} element={<Profile />} />
-          <Route path={CLIENT_ROUTES.APP_ROUTE.NOTES} element={<Note />} />
+        <Route
+          path={CLIENT_ROUTES.APP_ROUTE.PROFILE}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path={CLIENT_ROUTES.APP_ROUTE.CATEGORY}
-            element={<Category />}
-          />
-        </Route>
+        <Route
+          path={CLIENT_ROUTES.APP_ROUTE.NOTES}
+          element={
+            <ProtectedRoute>
+              <Note />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path={CLIENT_ROUTES.APP_ROUTE.CATEGORY}
+          element={
+            <ProtectedRoute>
+              <Category />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Redirect any unknown routes to NotFound page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
