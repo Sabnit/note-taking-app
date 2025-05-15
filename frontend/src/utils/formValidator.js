@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import { showToast } from "./toast";
 import { ERROR_MESSAGES } from "../constants/errorMessages";
 
 export const validateNoteForm = (formData) => {
@@ -19,7 +19,7 @@ export const validateNoteForm = (formData) => {
     newErrors.categoryIds = ERROR_MESSAGES.APP_FORM.NOTE_CATEGORY_ID_REQUIRED;
   }
 
-  Object.entries(newErrors).forEach((error) => toast.error(error[1]));
+  Object.entries(newErrors).forEach((error) => showToast.error(error[1]));
 
   return Object.keys(newErrors).length === 0;
 };
@@ -30,7 +30,7 @@ export const validateCategoryForm = (formData) => {
   if (formData.title.length < 3) {
     newErrors.title = ERROR_MESSAGES.APP_FORM.CATEGORY_TITLE_REQUIRED;
   }
-  Object.entries(newErrors).forEach((error) => toast.error(error[1]));
+  Object.entries(newErrors).forEach((error) => showToast.error(error[1]));
 
   return Object.keys(newErrors).length === 0;
 };

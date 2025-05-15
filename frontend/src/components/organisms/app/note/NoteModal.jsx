@@ -1,20 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-import { Fragment, useContext } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useContext } from "react";
 import { Hash, Search, X } from "lucide-react";
-import { toast } from "react-toastify";
 
-import Button from "../../../atoms/Button";
 import IconButton from "../../../atoms/IconButton";
-import FormField from "../../../molecules/FormField";
-import ModalIsLoading from "../../../molecules/app/ModalIsLoading";
-import ConfirmationDialog from "../../../molecules/app/ConfirmationDialog";
-
-import { AppContext } from "../../../../context/AppContext";
+import ModalIsLoading from "../../../molecules/ModalIsLoading";
+import ConfirmationDialog from "../../../molecules/ConfirmationDialog";
 
 import { validateNoteForm } from "../../../../utils/formValidator";
 
-import { ERROR_MESSAGES } from "../../../../constants/errorMessages";
+import { NoteContext } from "../../../../context/NoteContext";
 
 import { useCategories } from "../../../../hooks/query/useCategories";
 import {
@@ -23,6 +17,11 @@ import {
   useNote,
   useUpdateNote,
 } from "../../../../hooks/query/useNotes";
+import ModalActionButtons from "../../../molecules/ModalActionButtons";
+import { handleNoteDelete } from "../../../../hooks/handlers/note/handleNoteDelete";
+import { handleNoteUpdate } from "../../../../hooks/handlers/note/handleNoteUpdate";
+import { handleNoteCreate } from "../../../../hooks/handlers/note/handleNoteCreate";
+import { formDataChanges } from "../../../../utils/noteFormDataChanges";
 
 const NoteModal = () => {
   const [formData, setFormData] = useState({
@@ -31,22 +30,19 @@ const NoteModal = () => {
     date: "",
     categoryIds: [],
   });
-
-  // Store original data to compare for changes
   const [originalData, setOriginalData] = useState(null);
-
-  // State for confirmation dialog
   const [showConfirmation, setShowConfirmation] = useState(false);
-
-  // State for category search and dropdown
   const [categorySearch, setCategorySearch] = useState("");
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
   const inputRef = useRef(null);
-  const location = useLocation();
-  const params = useParams();
-  const categorySearchRef = useRef(null);
-  const categoryDropdownRef = useRef(null);
+
+  const {
+    isAddNoteModalOpen,
+    setIsAddNoteModalOpen,
+    selectedNoteId,
+    setSelectedNoteId,
+  } = useContext(NoteContext);
 
   // Initializing mutations
   const createNoteMutation = useCreateNote();
@@ -56,13 +52,6 @@ const NoteModal = () => {
   // Fetch the categories list
   const { data: categoriesData, isLoading: categoriesLoading } =
     useCategories();
-
-  const {
-    isAddNoteModalOpen,
-    setIsAddNoteModalOpen,
-    selectedNoteId,
-    setSelectedNoteId,
-  } = useContext(AppContext);
 
   // Fetch the note data if we're in edit mode
   const { data: noteData, isLoading: noteLoading } = useNote(selectedNoteId, {
@@ -104,25 +93,6 @@ const NoteModal = () => {
     }
   }, [isAddNoteModalOpen]);
 
-  // Close category dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(event.target) &&
-        categorySearchRef.current &&
-        !categorySearchRef.current.contains(event.target)
-      ) {
-        setShowCategoryDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   if (
     isAddNoteModalOpen &&
     (categoriesLoading || (isEditMode && noteLoading))
@@ -135,19 +105,6 @@ const NoteModal = () => {
   }
 
   const categories = categoriesData?.categories || [];
-
-  // Map to quickly look up categories by ID
-  const categoryMap = categories.reduce((acc, category) => {
-    if (!category) return;
-
-    acc[category.id] = category.title;
-    return acc;
-  }, {});
-
-  // Filter categories based on search
-  const filteredCategories = categories.filter((category) =>
-    category.title.toLowerCase().includes(categorySearch.toLowerCase())
-  );
 
   // Check if form has been modified from original data
   const hasChanges = () => {
@@ -163,7 +120,6 @@ const NoteModal = () => {
   };
 
   const handleClose = () => {
-    // If there are changes and in edit mode, show confirmation dialog
     if (isEditMode && hasChanges()) {
       setShowConfirmation(true);
     } else {
@@ -184,55 +140,12 @@ const NoteModal = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCategoryToggle = (categoryId) => {
-    if (formData.categoryIds.includes(categoryId)) {
-      setFormData((prev) => ({
-        ...prev,
-        categoryIds: prev.categoryIds.filter((id) => id !== categoryId),
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        categoryIds: [...prev.categoryIds, categoryId],
-      }));
-    }
-  };
-
-  const handleRemoveCategory = (categoryId) => {
-    setFormData((prev) => ({
-      ...prev,
-      categoryIds: prev.categoryIds.filter((id) => id !== categoryId),
-    }));
-  };
-
   const handleDelete = () => {
-    if (location.pathname.includes("/app/category/")) {
-      deleteNoteMutation.mutate(
-        {
-          noteId: selectedNoteId,
-          categoryId: params.id,
-        },
-        {
-          onSettled: () => {
-            toast.success("Note deleted successfully");
-            closeModal();
-          },
-        }
-      );
-    } else {
-      deleteNoteMutation.mutate(
-        {
-          noteId: selectedNoteId,
-          categoryId: null,
-        },
-        {
-          onSettled: () => {
-            toast.success("Note deleted successfully");
-            closeModal();
-          },
-        }
-      );
-    }
+    handleNoteDelete({
+      selectedNoteId,
+      deleteNoteMutation,
+      closeModal,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -243,75 +156,36 @@ const NoteModal = () => {
     // For old notes
     if (isEditMode) {
       // Only include fields that have changed
-      const changedData = {};
-
-      // Compare each field with original data
-      if (formData.title !== originalData.title) {
-        changedData.title = formData.title;
-      }
-
-      if (formData.description !== originalData.description) {
-        changedData.description = formData.description;
-      }
-
-      if (formData.date !== originalData.date) {
-        changedData.date = formData.date;
-      }
-
-      // Compare each category ids
-      if (
-        JSON.stringify(formData.categoryIds.sort()) !==
-        JSON.stringify(originalData.categoryIds.sort())
-      ) {
-        changedData.categoryIds = formData.categoryIds;
-      }
+      const changedData = formDataChanges({ formData, originalData });
 
       // Only update if there are actual changes
       if (Object.keys(changedData).length > 0) {
-        if (location.pathname.includes("/app/category/")) {
-          updateNoteMutation.mutate(
-            { id: selectedNoteId, data: changedData, categoryId: params.id },
-            {
-              onSuccess: () => {
-                closeModal();
-              },
-            }
-          );
+        // Check for category changes
+        let categoryIds = null;
+        if ("categoryIds" in changedData) {
+          categoryIds = [
+            ...new Set([
+              ...originalData.categoryIds,
+              ...changedData.categoryIds,
+            ]),
+          ];
         } else {
-          updateNoteMutation.mutate(
-            { id: selectedNoteId, data: changedData },
-            {
-              onSuccess: () => {
-                closeModal();
-              },
-            }
-          );
+          categoryIds = originalData.categoryIds;
         }
+
+        handleNoteUpdate({
+          selectedNoteId,
+          categoryIds,
+          changedData,
+          updateNoteMutation,
+          closeModal,
+        });
       } else {
-        // No changes, just close the modal
         closeModal();
       }
     } else {
-      // For new notes
-      if (location.pathname.includes("/app/category/")) {
-        createNoteMutation.mutate(
-          { noteData: formData, categoryId: params.id },
-          {
-            onSuccess: () => {
-              closeModal();
-            },
-          }
-        );
-      } else {
-        createNoteMutation.mutate(
-          { noteData: formData },
-          {
-            onSuccess: () => {
-              closeModal();
-            },
-          }
-        );
-      }
+      // Create new note
+      handleNoteCreate({ createNoteMutation, formData, closeModal });
     }
   };
 
@@ -370,121 +244,34 @@ const NoteModal = () => {
 
               {/* Selected Categories Tags */}
               {formData.categoryIds.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  {formData.categoryIds.map((categoryId) => (
-                    <div
-                      key={categoryId}
-                      className="flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-sm"
-                    >
-                      <Hash size={15} className="text-blue-500" />
-                      <span>{categoryMap[categoryId]}</span>
-                      <IconButton
-                        className="pt-1"
-                        onClick={() => handleRemoveCategory(categoryId)}
-                      >
-                        <X size={15} />
-                      </IconButton>
-                    </div>
-                  ))}
-                </div>
+                <SelectedCategories
+                  categories={categories}
+                  formData={formData}
+                  setFormData={setFormData}
+                />
               )}
             </div>
 
-            {/* Category Search and Selection */}
             <div className="flex flex-col p-4 border-t border-neutral-100">
-              <div className="relative mb-3">
-                <div
-                  className="flex items-center border border-neutral-200 rounded-md px-2 py-1"
-                  onClick={() => setShowCategoryDropdown(true)}
-                  ref={categorySearchRef}
-                >
-                  <Search size={16} className="text-gray-400 mr-2" />
-                  <input
-                    type="text"
-                    placeholder="Search categories..."
-                    value={categorySearch}
-                    onChange={(e) => setCategorySearch(e.target.value)}
-                    className="flex-1 outline-none text-sm"
-                    onFocus={() => setShowCategoryDropdown(true)}
-                  />
-                </div>
+              <CategorySelection
+                categories={categories}
+                categorySearch={categorySearch}
+                formData={formData}
+                setCategorySearch={setCategorySearch}
+                setFormData={setFormData}
+                setShowCategoryDropdown={setShowCategoryDropdown}
+                showCategoryDropdown={showCategoryDropdown}
+              />
 
-                {showCategoryDropdown && (
-                  <div
-                    ref={categoryDropdownRef}
-                    className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto"
-                  >
-                    {filteredCategories.length > 0 ? (
-                      filteredCategories.map((category) => (
-                        <div
-                          key={category.id}
-                          className={`flex items-center px-3 py-2 cursor-pointer hover:bg-gray-50 ${
-                            formData.categoryIds.includes(category.id)
-                              ? "bg-gray-50"
-                              : ""
-                          }`}
-                          onClick={() => handleCategoryToggle(category.id)}
-                        >
-                          <input
-                            type="checkbox"
-                            id={`dropdown-category-${category.id}`}
-                            checked={formData.categoryIds.includes(category.id)}
-                            onChange={() => {}}
-                            className="mr-2"
-                          />
-                          <label
-                            htmlFor={`dropdown-category-${category.id}`}
-                            className="flex-1 cursor-pointer text-sm"
-                          >
-                            {category.title}
-                          </label>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-sm text-gray-500">
-                        No categories found
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-between gap-2">
-                <div>
-                  {isEditMode && (
-                    <Button
-                      onClick={handleDelete}
-                      variant="danger"
-                      disabled={deleteNoteMutation.isPending}
-                    >
-                      {deleteNoteMutation.isPending ? "Deleting..." : "Delete"}
-                    </Button>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <Button type="button" variant="danger" onClick={handleClose}>
-                    Cancel
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    disabled={
-                      isEditMode
-                        ? !hasChanges() || updateNoteMutation.isPending
-                        : createNoteMutation.isPending
-                    }
-                  >
-                    {isEditMode
-                      ? updateNoteMutation.isPending
-                        ? "Updating..."
-                        : "Update note"
-                      : createNoteMutation.isPending
-                      ? "Adding..."
-                      : "Add note"}
-                  </Button>
-                </div>
-              </div>
+              <ModalActionButtons
+                isEditMode={isEditMode}
+                handleDelete={handleDelete}
+                handleClose={handleClose}
+                hasChanges={hasChanges}
+                createMutation={createNoteMutation}
+                deleteMutation={deleteNoteMutation}
+                updateMutation={updateNoteMutation}
+              />
             </div>
           </form>
         </div>
@@ -494,3 +281,168 @@ const NoteModal = () => {
 };
 
 export default NoteModal;
+
+/**
+ * Display selected categories
+ * @param {Object} props
+ * @param {Object} props.formData
+ * @param {(data: Object) => void} props.setFormData
+ * @param {Array<Object>} props.categories
+ * @returns {React.JSX.Element}
+ */
+const SelectedCategories = ({ formData, setFormData, categories }) => {
+  const handleRemoveSelectedCategory = (categoryId) => {
+    setFormData((prev) => ({
+      ...prev,
+      categoryIds: prev.categoryIds.filter((id) => id !== categoryId),
+    }));
+  };
+
+  // Filter out selected category
+  const categoryMap = categories.reduce((acc, category) => {
+    if (!category) return;
+
+    acc[category.id] = category.title;
+    return acc;
+  }, {});
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 mt-3">
+      {formData.categoryIds.map((categoryId) => (
+        <div
+          key={categoryId}
+          className="flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-sm"
+        >
+          <Hash size={15} className="text-blue-500" />
+          <span>{categoryMap[categoryId]}</span>
+          <IconButton
+            className="pt-1"
+            onClick={() => handleRemoveSelectedCategory(categoryId)}
+          >
+            <X size={15} />
+          </IconButton>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/**
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.categories
+ * @param {Object} props.formData
+ * @param {(data: Object) => void} props.setFormData
+ * @param {string} props.categorySearch
+ * @param {(value: string) => void} props.setCategorySearch
+ * @param {boolean} props.showCategoryDropdown
+ * @param {(value: boolean) => void} props.setShowCategoryDropdown
+ * @returns {React.JSX.Element}
+ */
+const CategorySelection = ({
+  categories,
+  formData,
+  setFormData,
+  categorySearch,
+  setCategorySearch,
+  showCategoryDropdown,
+  setShowCategoryDropdown,
+}) => {
+  const categorySearchRef = useRef(null);
+  const categoryDropdownRef = useRef(null);
+
+  // Filter categories based on search
+  const filteredCategories = categories.filter((category) =>
+    category.title.toLowerCase().includes(categorySearch.toLowerCase())
+  );
+
+  const handleCategoryToggle = (categoryId) => {
+    if (formData.categoryIds.includes(categoryId)) {
+      setFormData((prev) => ({
+        ...prev,
+        categoryIds: prev.categoryIds.filter((id) => id !== categoryId),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        categoryIds: [...prev.categoryIds, categoryId],
+      }));
+    }
+  };
+
+  // Close category dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target) &&
+        categorySearchRef.current &&
+        !categorySearchRef.current.contains(event.target)
+      ) {
+        setShowCategoryDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="relative mb-3">
+      <div
+        className="flex items-center border border-neutral-200 rounded-md px-2 py-1"
+        onClick={() => setShowCategoryDropdown(true)}
+        ref={categorySearchRef}
+      >
+        <Search size={16} className="text-gray-400 mr-2" />
+        <input
+          type="text"
+          placeholder="Search categories..."
+          value={categorySearch}
+          onChange={(e) => setCategorySearch(e.target.value)}
+          className="flex-1 outline-none text-sm"
+          onFocus={() => setShowCategoryDropdown(true)}
+        />
+      </div>
+
+      {showCategoryDropdown && (
+        <div
+          ref={categoryDropdownRef}
+          className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto"
+        >
+          {filteredCategories.length > 0 ? (
+            filteredCategories.map((category) => (
+              <div
+                key={category.id}
+                className={`flex items-center px-3 py-2 cursor-pointer hover:bg-gray-50 ${
+                  formData.categoryIds.includes(category.id) ? "bg-gray-50" : ""
+                }`}
+                onClick={() => handleCategoryToggle(category.id)}
+              >
+                <input
+                  type="checkbox"
+                  id={`dropdown-category-${category.id}`}
+                  checked={formData.categoryIds.includes(category.id)}
+                  onChange={() => {}}
+                  className="mr-2"
+                />
+                <label
+                  htmlFor={`dropdown-category-${category.id}`}
+                  className="flex-1 cursor-pointer text-sm"
+                >
+                  {category.title}
+                </label>
+              </div>
+            ))
+          ) : (
+            <div className="px-3 py-2 text-sm text-gray-500">
+              No categories found
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};

@@ -1,15 +1,16 @@
 import { createContext, useEffect, useState } from "react";
-import { getCurrentUser } from "../services/user";
+import { useNavigate } from "react-router-dom";
 
-import { API_ENDPOINTS } from "../constants/apiEndpoints";
-import api from "../utils/api";
+import { logout } from "../services/authService";
+import { getCurrentUser } from "../services/user";
+import { CLIENT_ROUTES } from "../constants/clientRoutes";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -18,20 +19,27 @@ export const AuthProvider = ({ children }) => {
         setUser(userData.data);
         setIsAuthenticated(true);
       } catch (error) {
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
+        if (error?.isAuthError || error?.isRefreshTokenError) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
       }
     };
     checkAuthStatus();
   }, []);
 
   // Logout function
-  const logout = async () => {
-    await api.post(API_ENDPOINTS.AUTH_ROUTES.LOGOUT);
+  const userLogout = async () => {
+    await logout();
     setUser(null);
     setIsAuthenticated(false);
+  };
+
+  // Handle token expiration
+  const handleTokenExpiration = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate(CLIENT_ROUTES.AUTH_ROUTES.LOGIN);
   };
 
   const contextValue = {
@@ -39,9 +47,8 @@ export const AuthProvider = ({ children }) => {
     setUser,
     isAuthenticated,
     setIsAuthenticated,
-    loading,
-    setLoading,
-    logout,
+    userLogout,
+    handleTokenExpiration,
   };
 
   return (

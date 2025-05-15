@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../../atoms/Button";
-
 import FormField from "../../molecules/FormField";
 import { signup } from "../../../services/authService";
+
+import { showToast } from "../../../utils/toast";
 
 import { REGEX } from "../../../constants/regex";
 import { ERROR_MESSAGES } from "../../../constants/errorMessages";
@@ -63,7 +63,7 @@ const SignupForm = () => {
 
     try {
       const response = await signup(formData);
-      toast.success(response.message);
+      showToast.success(response.message);
       setFormData({
         firstName: "",
         lastName: "",
@@ -72,7 +72,7 @@ const SignupForm = () => {
       });
       navigate(`${CLIENT_ROUTES.AUTH_ROUTES.LOGIN}`);
     } catch (error) {
-      toast.error(error.response.data.message);
+      showToast.error(error.response.data.message);
     } finally {
       setIsSubmitting(false);
     }

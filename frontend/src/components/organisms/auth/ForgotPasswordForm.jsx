@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 import Button from "../../atoms/Button";
-import { ERROR_MESSAGES } from "../../../constants/errorMessages";
-import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
-import api from "../../../utils/api";
-import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
 import FormField from "../../molecules/FormField";
+
+import api from "../../../utils/api";
+import { showToast } from "../../../utils/toast";
+
+import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
+import { ERROR_MESSAGES } from "../../../constants/errorMessages";
 
 const ForgotPasswordForm = () => {
   const [formData, setFormData] = useState({
@@ -44,10 +46,9 @@ const ForgotPasswordForm = () => {
 
     try {
       await api.post(API_ENDPOINTS.AUTH_ROUTES.FORGOT_PASSWORD, formData);
-      toast.success("Reset link sent in your email");
+      showToast.success("Reset link sent in your email");
     } catch (error) {
-      console.log(error);
-      // toast.error(error.response.data.message);
+      showToast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -86,7 +87,7 @@ const ForgotPasswordForm = () => {
           </Button>
         </form>
         <div className="text-center text-sm text-gray-600">
-          Go to{" "}
+          Go to
           <Link to={CLIENT_ROUTES.AUTH_ROUTES.LOGIN}>
             <span className="font-semibold text-orange-400 hover:text-orange-300">
               Log in

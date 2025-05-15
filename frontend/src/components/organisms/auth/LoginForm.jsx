@@ -1,27 +1,38 @@
-import { useContext, useState } from "react";
-import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import FormField from "../../molecules/FormField";
 import Button from "../../atoms/Button";
-import { ERROR_MESSAGES } from "../../../constants/errorMessages";
-import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+import FormField from "../../molecules/FormField";
+
 import { login } from "../../../services/authService";
-import { AuthContext } from "../../../context/AuthContext";
 import { getCurrentUser } from "../../../services/user";
+
+import { showToast } from "../../../utils/toast";
+
+import { AuthContext } from "../../../context/AuthContext";
+
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
+import { ERROR_MESSAGES } from "../../../constants/errorMessages";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
-  const { setUser, setIsAuthenticated } = useContext(AuthContext);
-
-  // Initialize states
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { setUser, setIsAuthenticated, isAuthenticated } =
+    useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // If already authenticated, redirect to home
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(CLIENT_ROUTES.APP_ROUTE.NOTES);
+    }
+  }, [isAuthenticated, navigate]);
 
   // Handle form input data
   const handleChange = (e) => {
@@ -57,26 +68,25 @@ const LoginForm = () => {
 
     setIsSubmitting(true);
     try {
-      // Login
       await login(formData);
 
-      // Using cookies -  accessToken we fetch the user profile
+      // Get user data from accessToken cookie
       const userResponse = await getCurrentUser();
       setUser(userResponse.data);
       setIsAuthenticated(true);
 
-      toast.success("Login successful! Welcome.");
+      // Navigate to the previous page that was accessed or default home page
+      const redirectTo = location.state?.from || CLIENT_ROUTES.APP_ROUTE.NOTES;
+      navigate(redirectTo);
 
-      navigate(`${CLIENT_ROUTES.APP_ROUTE.NOTES}`);
-    } catch (error) {
-      // toast.error(error.response.data.message);
-      console.log("error found", error);
-    } finally {
-      setIsSubmitting(false);
+      showToast.success("Login successful! Welcome.");
+
       setFormData({
         email: "",
         password: "",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -115,6 +125,14 @@ const LoginForm = () => {
           />
 
           <div className="flex items-center justify-between">
+            {/* <FormField
+              id="remember"
+              type="checkbox"
+              inputClassName="h-4 w-4 text-orange-500 border-gray-300 rounded"
+              label="Remember me"
+              labelPosition="right"
+              labelClassName="text-gray-300"
+            /> */}
             <label className="flex items-center">
               <input
                 id="remember"
@@ -134,7 +152,7 @@ const LoginForm = () => {
             type="submit"
             variant="primary"
             disabled={isSubmitting}
-            className="w-full"
+            stretch
           >
             {isSubmitting ? "Logging in..." : "Log In"}
           </Button>

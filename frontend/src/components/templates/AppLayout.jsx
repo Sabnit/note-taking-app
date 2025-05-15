@@ -1,25 +1,24 @@
 import React, { useContext } from "react";
 import { PanelRightClose } from "lucide-react";
 
-import SideBar from "../organisms/app/SideBar";
+import Sidebar from "../organisms/app/sidebar/Sidebar";
 import SearchModal from "../organisms/app/SearchModal";
 import NoteModal from "../organisms/app/note/NoteModal";
 import CategoryModal from "../organisms/app/category/CategoryModal";
 
-import { AppContext } from "../../context/AppContext";
+import { NoteContext } from "../../context/NoteContext";
+import { AppUIContext } from "../../context/AppUIContext";
+import { CategoryContext } from "../../context/CategoryContext";
 
 const AppLayout = ({ children }) => {
-  const {
-    isSidebarOpen,
-    setIsSidebarOpen,
-    isAddNoteModalOpen,
-    isSearchModalOpen,
-    isAddCategoryModalOpen,
-  } = useContext(AppContext);
+  const { isAddNoteModalOpen } = useContext(NoteContext);
+  const { isAddCategoryModalOpen } = useContext(CategoryContext);
+  const { isSidebarOpen, setIsSidebarOpen, isSearchModalOpen } =
+    useContext(AppUIContext);
 
   return (
     <div className="flex h-screen w-full">
-      <SideBar />
+      <Sidebar />
       <div className="flex-1 flex flex-col relative">
         {!isSidebarOpen && (
           <div className="p-4 absolute">

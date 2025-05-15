@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Search } from "lucide-react";
-import { AppContext } from "../../../context/AppContext";
+import { AppUIContext } from "../../context/AppUIContext";
 
 const SearchBar = () => {
-  const { setIsSearchModalOpen } = useContext(AppContext);
+  const { setIsSearchModalOpen } = useContext(AppUIContext);
   return (
     <div
       onClick={() => setIsSearchModalOpen((prev) => !prev)}

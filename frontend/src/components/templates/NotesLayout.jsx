@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 
-import NoteItem from "../molecules/app/note/NoteItem";
+import NoteItem from "../organisms/app/note/NoteItem";
 
-import { AppContext } from "../../context/AppContext";
+import { NoteContext } from "../../context/NoteContext";
 
 const NotesLayout = ({ notes }) => {
-  const { setIsAddNoteModalOpen, setSelectedNoteId } = useContext(AppContext);
+  const { setIsAddNoteModalOpen, setSelectedNoteId } = useContext(NoteContext);
 
   const handleClick = (noteId) => {
     setSelectedNoteId(noteId);

@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NotepadText } from "lucide-react";
 
-import Header from "../../../molecules/app/Header";
-import Pagination from "../../../molecules/app/Pagination";
-import PageIsLoading from "../../../molecules/app/PageIsLoading";
-import AddNoteButton from "../../../molecules/app/note/AddNoteButton";
-
-import NoteListLayout from "../../../templates/NotesLayout";
+import Header from "../../../molecules/Header";
+import Pagination from "../../../molecules/Pagination";
+import PageIsLoading from "../../../molecules/PageIsLoading";
+import AddNoteButton from "../../../molecules/note/AddNoteButton";
 
 import { PAGE_LIMIT } from "../../../../constants/pagination";
 
@@ -16,6 +14,9 @@ import {
   useNotes,
   usePrefetchNextNotes,
 } from "../../../../hooks/query/useNotes";
+import IconButton from "../../../atoms/IconButton";
+import NotesLayout from "../../../templates/NotesLayout";
+import { NoteContext } from "../../../../context/NoteContext";
 
 const NoteDetails = () => {
   const [paginationOptions, setPaginationOptions] = useState({
@@ -27,11 +28,13 @@ const NoteDetails = () => {
 
   const { data, isLoading, isError, error } = useNotes(paginationOptions);
 
+  const { setIsAddNoteModalOpen } = useContext(NoteContext);
+
   // Prefetch next page data
-  usePrefetchNextNotes({
-    currentOptions: paginationOptions,
-    data: data,
-  });
+  // usePrefetchNextNotes({
+  //   currentOptions: paginationOptions,
+  //   data: data,
+  // });
 
   const handlePageChange = (newPage) => {
     setPaginationOptions((prev) => ({ ...prev, page: newPage }));
@@ -79,8 +82,12 @@ const NoteDetails = () => {
       <div className="space-y-2">
         {notes.length > 0 ? (
           <>
-            <NoteListLayout notes={groupedNotes} />
-            <AddNoteButton style={"normal"} />
+            <NotesLayout notes={groupedNotes} />
+
+            <AddNoteButton
+              variant="normal"
+              onClick={() => setIsAddNoteModalOpen((prev) => !prev)}
+            />
             <Pagination
               page={pagination.page}
               totalPages={pagination.totalPages}
@@ -92,7 +99,10 @@ const NoteDetails = () => {
         ) : (
           <div className="text-center py-10">
             <span className="text-gray-500">No notes found</span>
-            <AddNoteButton style={"normal"} />
+            <AddNoteButton
+              variant="normal"
+              onClick={() => setIsAddNoteModalOpen((prev) => !prev)}
+            />
           </div>
         )}
       </div>

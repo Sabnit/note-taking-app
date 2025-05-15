@@ -1,7 +1,7 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import IconButton from "../../atoms/IconButton";
+import IconButton from "../atoms/IconButton";
 
 const Pagination = ({
   page,
@@ -13,7 +13,7 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-end gap-2">
       <IconButton
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100 "
+        variant="pagination"
         onClick={() => hasPreviousPage && onPageChange(page - 1)}
         disabled={!hasPreviousPage}
       >
@@ -30,7 +30,7 @@ const Pagination = ({
       </div>
 
       <IconButton
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white  hover:bg-gray-50 active:bg-gray-100"
+        variant="pagination"
         onClick={() => hasNextPage && onPageChange(page + 1)}
         disabled={!hasNextPage}
       >

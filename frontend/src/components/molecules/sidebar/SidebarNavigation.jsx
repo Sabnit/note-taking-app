@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Calendar1, CalendarDays, CheckCircle, Layers } from "lucide-react";
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
 
-const SideBarNavigation = () => {
+const SidebarNavigation = () => {
   const navLinks = [
     {
       title: "Notes",
@@ -31,4 +31,4 @@ const SideBarNavigation = () => {
   );
 };
 
-export default SideBarNavigation;
+export default SidebarNavigation;

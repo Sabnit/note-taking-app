@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "../../atoms/Button";
+import Button from "../atoms/Button";
 
 const ConfirmationDialog = ({ onCancel, onDiscard }) => {
   return (

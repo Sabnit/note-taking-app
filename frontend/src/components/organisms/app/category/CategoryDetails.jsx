@@ -1,24 +1,26 @@
 import React, { useContext, useState } from "react";
-import { toast } from "react-toastify";
 import { Edit, NotepadText, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Pagination from "../../../molecules/app/Pagination";
-import NoteListLayout from "../../../templates/NotesLayout";
-import PageIsLoading from "../../../molecules/app/PageIsLoading";
-import AddNoteButton from "../../../molecules/app/note/AddNoteButton";
+import Pagination from "../../../molecules/Pagination";
+import NotesLayout from "../../../templates/NotesLayout";
+import PageIsLoading from "../../../molecules/PageIsLoading";
+import AddNoteButton from "../../../molecules/note/AddNoteButton";
 
 import { PAGE_LIMIT } from "../../../../constants/pagination";
 import { CLIENT_ROUTES } from "../../../../constants/clientRoutes";
 
+import { showToast } from "../../../../utils/toast";
 import { groupNotesByDate } from "../../../../utils/formatter";
+
+import { NoteContext } from "../../../../context/NoteContext";
+import { CategoryContext } from "../../../../context/CategoryContext";
 
 import {
   useCategoryNotes,
   useDeleteCategory,
   usePrefetchNextCategoryNotes,
 } from "../../../../hooks/query/useCategories";
-import { AppContext } from "../../../../context/AppContext";
 
 const CategoryDetails = () => {
   const [paginationOptions, setPaginationOptions] = useState({
@@ -30,22 +32,25 @@ const CategoryDetails = () => {
 
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { data, isLoading, isError, error } = useCategoryNotes(
     id,
     paginationOptions
   );
 
   const { setIsAddCategoryModalOpen, setSelectedCategoryId } =
-    useContext(AppContext);
+    useContext(CategoryContext);
+
+  const { setIsAddNoteModalOpen } = useContext(NoteContext);
 
   const deleteCategoryMutation = useDeleteCategory();
 
   // // Prefect nextPage data
-  usePrefetchNextCategoryNotes({
-    categoryId: id,
-    currentOptions: paginationOptions,
-    data,
-  });
+  // usePrefetchNextCategoryNotes({
+  //   categoryId: id,
+  //   currentOptions: paginationOptions,
+  //   data,
+  // });
 
   const handlePageChange = (newPage) => {
     setPaginationOptions((prev) => ({ ...prev, page: newPage }));
@@ -61,7 +66,7 @@ const CategoryDetails = () => {
       { id },
       {
         onSuccess: () => {
-          toast.success("Category deleted successfully");
+          showToast.success("Category deleted successfully");
           navigate(CLIENT_ROUTES.APP_ROUTE.NOTES);
         },
       }
@@ -108,8 +113,11 @@ const CategoryDetails = () => {
         </span>
       </div>
 
-      <NoteListLayout notes={groupedNotes} />
-      <AddNoteButton style={"normal"} />
+      <NotesLayout notes={groupedNotes} />
+      <AddNoteButton
+        variant="normal"
+        onClick={() => setIsAddNoteModalOpen((prev) => !prev)}
+      />
       <Pagination
         page={pagination.page}
         totalPages={pagination.totalPages}

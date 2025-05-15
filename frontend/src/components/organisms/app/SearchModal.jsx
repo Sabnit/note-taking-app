@@ -2,13 +2,13 @@ import React, { useContext, useRef } from "react";
 import { useState } from "react";
 import { Calendar, ChevronDown, Search } from "lucide-react";
 
-import { AppContext } from "../../../context/AppContext";
+import { AppUIContext } from "../../../context/AppUIContext";
 
 const SearchModal = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const inputRef = useRef(null);
-  const { setIsSearchModalOpen } = useContext(AppContext);
+  const { setIsSearchModalOpen } = useContext(AppUIContext);
 
   const handleClose = () => {
     setIsSearchModalOpen((prev) => !prev);

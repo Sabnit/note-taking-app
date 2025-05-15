@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-
-import api from "../../../utils/api";
 
 import Button from "../../atoms/Button";
 import FormField from "../../molecules/FormField";
 
+import api from "../../../utils/api";
+import { showToast } from "../../../utils/toast";
+
 import { REGEX } from "../../../constants/regex";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
-import { ERROR_MESSAGES } from "../../../constants/errorMessages";
 import { CLIENT_ROUTES } from "../../../constants/clientRoutes";
+import { ERROR_MESSAGES } from "../../../constants/errorMessages";
 
 const ResetPasswordForm = () => {
   const [formData, setFormData] = useState({
@@ -74,15 +74,14 @@ const ResetPasswordForm = () => {
     setIsSubmitting(true);
 
     try {
-      const data = await api.post(
+      await api.post(
         API_ENDPOINTS.AUTH_ROUTES.RESET_PASSWORD,
         formData.password
       );
-      toast.success("Password has been reset");
+      showToast.success("Password has been reset");
       navigate(`${CLIENT_ROUTES.AUTH_ROUTES.LOGIN}`);
     } catch (error) {
-      console.log(error);
-      // toast.error(error.response.data.message);
+      showToast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }

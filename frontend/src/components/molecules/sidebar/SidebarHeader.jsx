@@ -1,25 +1,18 @@
 import React, { useContext, useState } from "react";
-import {
-  ChevronDown,
-  LogOut,
-  PanelLeftClose,
-  PanelRightClose,
-  Settings,
-  User,
-} from "lucide-react";
+import { ChevronDown, LogOut, PanelLeftClose, User } from "lucide-react";
 
 import Button from "../../atoms/Button";
 
-import { AppContext } from "../../../context/AppContext";
 import { AuthContext } from "../../../context/AuthContext";
+import { AppUIContext } from "../../../context/AppUIContext";
 
-const SideBarHeader = () => {
-  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext);
-  const { user, logout } = useContext(AuthContext);
+const SidebarHeader = () => {
+  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppUIContext);
+  const { user, userLogout } = useContext(AuthContext);
   const [showProfileBar, setShowProfileBar] = useState(true);
 
   const handleLogout = async () => {
-    await logout();
+    await userLogout();
   };
 
   return (
@@ -69,4 +62,4 @@ const SideBarHeader = () => {
   );
 };
 
-export default SideBarHeader;
+export default SidebarHeader;
