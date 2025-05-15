@@ -96,9 +96,10 @@ export const deleteNote = async (req, res, next) => {
 
     const note = await noteServices.deleteNote(noteId, userId);
 
-    res.status(204).json({
+    res.status(200).json({
       status: "success",
-      message: `Note: "${note.title}" has been removed successfully`,
+      message: `Note has been removed successfully`,
+      note,
     });
   } catch (error) {
     next(error);

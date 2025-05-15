@@ -114,11 +114,13 @@ class NoteModel extends BaseModel {
       };
     }
 
-    const include = {
-      categories: true,
+    const includeObject = {
+      include: {
+        categories: true,
+      },
     };
 
-    return super.update(noteId, prismaUpdateData, include);
+    return super.update(noteId, prismaUpdateData, includeObject);
   }
 
   /**
@@ -127,7 +129,13 @@ class NoteModel extends BaseModel {
    * @returns {Promise<Object>} - Deleted note object
    */
   async delete(noteId) {
-    return super.delete(noteId);
+    const includeObject = {
+      include: {
+        categories: true,
+      },
+    };
+
+    return super.delete(noteId, includeObject);
   }
 }
 

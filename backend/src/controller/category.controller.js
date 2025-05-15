@@ -7,9 +7,6 @@ export const createCategory = async (req, res, next) => {
       body: { title },
       user: { userId },
     } = req;
-
-    console.log(req.body);
-
     const normalizedTitle = title.trim();
 
     const category = await categoryServices.createCategory({
@@ -43,38 +40,6 @@ export const getCategoryById = async (req, res, next) => {
     next(error);
   }
 };
-
-// export const getAllCategories = async (req, res, next) => {
-//   try {
-//     const { userId } = req.user;
-//     const {
-//       page = DEFAULT_PAGE,
-//       limit = DEFAULT_PAGE_SIZE,
-//       sortBy,
-//       order,
-//     } = req.query;
-
-//     const paginationOptions = {
-//       page: parseInt(page),
-//       limit: parseInt(limit),
-//       sortBy,
-//       order,
-//     };
-
-//     const categories = await categoryServices.getAllCategories(
-//       userId,
-//       paginationOptions
-//     );
-
-//     res.status(200).json({
-//       status: "success",
-//       message: "Categories retrieved successfully",
-//       categories,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const getAllCategories = async (req, res, next) => {
   try {

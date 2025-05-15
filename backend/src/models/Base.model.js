@@ -104,11 +104,14 @@ export class BaseModel {
    * @param {number} id
    * @returns {Promise<Object>} Deleted record
    */
-  async delete(id) {
+  async delete(id, options = {}) {
+    const { include = {} } = options;
+
     return await this.model.delete({
       where: {
         id,
       },
+      include,
     });
   }
 

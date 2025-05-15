@@ -1,7 +1,10 @@
 import { decode } from "jsonwebtoken";
-import { verifyAccessToken } from "../utils/token.js";
+
 import AppError from "../utils/AppError.js";
+
 import { userModel } from "../models/User.model.js";
+
+import { verifyAccessToken } from "../utils/token.js";
 
 export const getCurrentUser = async (accessToken) => {
   const decoded = verifyAccessToken(accessToken);
