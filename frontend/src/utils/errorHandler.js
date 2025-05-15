@@ -7,12 +7,32 @@ export function handleApiError(error) {
   let status = null;
   let url = null;
 
+  // Check for refresh token error and skip toast message
+  if (error?.isRefreshTokenError) {
+    return error;
+  }
+
   // Extract basic information if available
   if (error?.response) {
     status = error.response.status;
     url = error.config?.url;
 
     const responseData = error.response.data;
+
+    // Skip toasts for authentication issues
+    if (
+      responseData?.message === "Access token missing" ||
+      responseData?.message === "Access token expired" ||
+      responseData?.message === "Refresh token expired" ||
+      responseData?.message === "Invalid refresh token"
+    ) {
+      return {
+        message: responseData.message,
+        status,
+        url,
+        isAuthError: true,
+      };
+    }
 
     // Extract error message from various possible structures
     if (responseData?.message) {
@@ -40,7 +60,7 @@ export function handleApiError(error) {
           errorMessage = "You don't have permission to access this note.";
           break;
         case 404:
-          errorMessage = "Note not found.";
+          errorMessage = "Not found.";
           break;
         case 409:
           errorMessage = "Conflict detected. Data has been updated already.";
@@ -70,7 +90,7 @@ export function handleApiError(error) {
   // Show toast notification with the error message
   showToast.error(errorMessage);
 
-  // Return standardized error object for further handling if needed
+  // Return standardized error object for further handling
   const errorInfo = {
     message: errorMessage,
     code: errorCode,
@@ -78,5 +98,5 @@ export function handleApiError(error) {
     url,
   };
 
-  throw errorInfo;
+  return errorInfo;
 }
