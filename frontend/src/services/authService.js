@@ -9,7 +9,6 @@ export const login = async (userdata) => {
 
 export const signup = async (userData) => {
   const response = await api.post(API_ENDPOINTS.AUTH_ROUTES.SIGNUP, userData);
-
   return response.data;
 };
 
@@ -19,13 +18,8 @@ export const logout = async () => {
 };
 
 export const refreshToken = async () => {
-  try {
-    const response = await api.post(API_ENDPOINTS.AUTH_ROUTES.REFRESH);
-    return response.data;
-  } catch (error) {
-    window.location.href = `${CLIENT_ROUTES.AUTH_ROUTES.LOGIN}`;
-    throw error;
-  }
+  const response = await api.post(API_ENDPOINTS.AUTH_ROUTES.REFRESH);
+  return response.data;
 };
 
 export const forgetPassword = async (email) => {
