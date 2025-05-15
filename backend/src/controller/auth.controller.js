@@ -124,6 +124,9 @@ export const refreshToken = (req, res, next) => {
     if (error.name === "JsonWebTokenError") {
       return next(new AppError("Invalid refresh token", 401));
     }
+    if (error.name === "TokenExpiredError") {
+      return next(new AppError("Token expired", 401));
+    }
     next(error);
   }
 };
